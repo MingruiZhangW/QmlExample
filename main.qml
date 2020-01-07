@@ -3,7 +3,6 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.2
 import QtQuick.Controls 1.4
 import QtQuick.Controls 2.1
-import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.3
 
 Window {
@@ -83,6 +82,37 @@ Window {
                     }
                 }
             }
+
+            ListView {
+                id: smartListView
+
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                width: parent.width
+                height: parent.height - accountComboBox.height - 30
+                model: 20
+                delegate: ItemDelegate {
+                    text: "Item" + index
+                }
+
+                ScrollBar.vertical: ScrollBar {
+                    id: controlBar
+
+                    parent: smartListView
+                    anchors.top: smartListView.top
+                    anchors.right: smartListView.right
+                    size: 0.5
+                    orientation: Qt.Vertical
+                    policy: smartListView.contentHeight > smartListView.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+
+                    contentItem: Rectangle {
+                        implicitWidth: 5
+                        implicitHeight: 100
+                        radius: width / 2
+                        color: controlBar.pressed ? "#81e889" : "#c2f4c6"
+                    }
+                }
+            }
         }
 
         Rectangle {
@@ -107,6 +137,9 @@ Window {
         if(mainWindow.width < 500){
             welcomeRect.visible = false
             callViewRect.width = mainWindow.width
+        } else if(mainWindow.width >= 500) {
+            welcomeRect.visible = true
+            callViewRect.width = mainWindow.width / 2
         }
     }
 }
