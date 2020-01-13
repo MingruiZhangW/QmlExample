@@ -11,6 +11,7 @@ Window {
     property int minWidth: 300
     property int minHeight: 400
     property int textFontSize: 8
+    property string userTypeName: "type"
 
     signal searchBarTextChanged(string msg)
 
@@ -26,20 +27,34 @@ Window {
         id: popback
         Rectangle {
             Button {
-                anchors.centerIn: parent
-                text: "Pop"
+                id: backButton
+
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.top: parent.top
+                text: "Back"
                 onClicked: {
                     var inWelcomeViewStack = welcomeViewStack.find(function(item, index) {
-                        return item.visible
+                        return index > 0
                     })
                     var inCallViewStack = callViewStack.find(function(item, index) {
-                        return item.visible
+                        return index > 0
                     })
                     if(inWelcomeViewStack)
                         welcomeViewStack.pop()
                     else
                         callViewStack.pop()
                 }
+            }
+
+            Text {
+                anchors.left: backButton.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: backButton.verticalCenter
+                fontSizeMode: Text.Fit
+
+                font.pointSize: 10
+                text: userTypeName
             }
         }
     }
@@ -159,7 +174,6 @@ Window {
                 background: Rectangle {
                     id: searchBarBackground
 
-                    radius: 10
                     border.color: searchBar.focus ? "green" : "black"
                 }
                 onTextChanged: {
@@ -241,6 +255,7 @@ Window {
                                     welcomeViewStack.push(popback)
                                 else
                                     callViewStack.push(popback)
+                                userTypeName = smartListUserName.text
                             }
                         }
                         onEntered: { itemSmartListBackground.color = "#c7c7c7"; }
@@ -353,7 +368,23 @@ Window {
         if(mainWindow.width < 500){
             welcomeViewStack.visible = false
             callViewStack.width = mainWindow.width
+
+            var inWelcomeViewStack = welcomeViewStack.find(function(item, index) {
+                return index > 0
+            })
+            if(inWelcomeViewStack) {
+                callViewStack.push(popback)
+                welcomeViewStack.pop()
+            }
         } else if(mainWindow.width >= 500) {
+            var inCallViewStack = callViewStack.find(function(item, index) {
+                return index > 0
+            })
+            if(inCallViewStack) {
+                welcomeViewStack.push(popback)
+                callViewStack.pop()
+            }
+
             welcomeViewStack.visible = true
             callViewStack.width = mainWindow.width / 2
         }
