@@ -14,8 +14,7 @@ Window {
 
     signal searchBarTextChanged(string msg)
 
-    Universal.theme: Universal.Dark
-    Universal.accent: Universal.Violet
+    Universal.theme: Universal.Light
 
     visible: true
     width: 580
@@ -23,19 +22,33 @@ Window {
     minimumHeight: minHeight
     title: qsTr("Hello World")
 
-    Rectangle {
-        id: splitView
+    Component {
+        id: popback
+        Rectangle {
+            Button {
+                anchors.centerIn: parent
+                text: "Pop"
+                onClicked: {
+                    var inWelcomeViewStack = welcomeViewStack.find(function(item, index) {
+                        return item.visible
+                    })
+                    var inCallViewStack = callViewStack.find(function(item, index) {
+                        return item.visible
+                    })
+                    if(inWelcomeViewStack)
+                        welcomeViewStack.pop()
+                    else
+                        callViewStack.pop()
+                }
+            }
+        }
+    }
 
-        anchors.fill: parent;
-        width: mainWindow.width
-        height: mainWindow.height
+    Component {
+        id: callViewRectComp
 
         Rectangle {
             id: callViewRect
-
-            anchors.left: parent.left
-            width: splitView.width / 2
-            height: splitView.height
 
             ComboBox {
                 id: accountComboBox
@@ -223,6 +236,11 @@ Window {
                                 smartListContextMenu.x = relativeMousePos.x
                                 smartListContextMenu.y = relativeMousePos.y
                                 smartListContextMenu.open()
+                            } else if (mouse.button === Qt.LeftButton && Qt.platform.os == "windows") {
+                                if(welcomeViewStack.visible)
+                                    welcomeViewStack.push(popback)
+                                else
+                                    callViewStack.push(popback)
                             }
                         }
                         onEntered: { itemSmartListBackground.color = "#c7c7c7"; }
@@ -279,44 +297,76 @@ Window {
                         radius: width / 2
                         color: controlBar.pressed ? "#81e889" : "#c2f4c6"
                     }
+                    background: Rectangle {
+                        color: "transparent"
+                    }
                 }
             }
         }
+    }
+    Component {
+        id: welcomeRectComp
 
         Rectangle {
             id: welcomeRect
-
-            anchors.right: parent.right
-            width: splitView.width / 2
-            height: splitView.height
 
             Label {
                 anchors.centerIn: welcomeRect
                 width: 200
                 height: 200
                 text: "Welcome"
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
                 font.pointSize: 22
                 font.italic: true
             }
         }
     }
 
-    onWidthChanged: {
-        if(mainWindow.width < 500){
-            welcomeRect.visible = false
-            callViewRect.width = mainWindow.width
-        } else if(mainWindow.width >= 500) {
-            welcomeRect.visible = true
-            callViewRect.width = mainWindow.width / 2
+    Rectangle {
+        id: splitView
+
+        anchors.fill: parent;
+        width: mainWindow.width
+        height: mainWindow.height
+
+        StackView {
+            id: callViewStack
+
+            initialItem: callViewRectComp
+            anchors.left: splitView.left
+            width: splitView.width / 2
+            height: splitView.height
+        }
+
+        StackView {
+            id: welcomeViewStack
+
+            initialItem: welcomeRectComp
+            anchors.right: parent.right
+            width: splitView.width / 2
+            height: splitView.height
         }
     }
 
-    Popup {
+    onWidthChanged: {
+        if(mainWindow.width < 500){
+            welcomeViewStack.visible = false
+            callViewStack.width = mainWindow.width
+        } else if(mainWindow.width >= 500) {
+            welcomeViewStack.visible = true
+            callViewStack.width = mainWindow.width / 2
+        }
+    }
+
+    Dialog {
         id: contextMenuPopUpMock
 
         x: Math.round((mainWindow.width - width) / 2)
         y: Math.round((mainWindow.height - height) / 2)
         width: Math.min(mainWindow.width, mainWindow.height) / 3 * 2
+
+        standardButtons: Dialog.Ok | Dialog.Cancel
 
         contentHeight: popImg.height
 

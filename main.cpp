@@ -5,6 +5,7 @@
 #include <qqml.h>
 #include <QtQuick/qquickitem.h>
 #include <QtQuick/qquickview.h>
+#include <QQuickStyle>
 #include <QString>
 
 #include "animalmodel.h"
@@ -31,6 +32,9 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
+
+    QQuickStyle::setStyle("Universal");
+    //QQuickStyle::setStyle("Material");
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
