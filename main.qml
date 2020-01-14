@@ -86,11 +86,43 @@ Window {
                 }
 
                 Text {
+                    id: textElementRoot
+
                     anchors.left: userImageRoot.right
                     anchors.leftMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
                     text: animalModel.data(animalModel.index(0,0), 257) + " " + animalModel.data(animalModel.index(0,0), 258)
                     font.pointSize: 10
+                }
+
+                Button {
+                    id: settingsButton
+
+                    anchors.right: accountComboBox.right
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: accountComboBox.verticalCenter
+                    width: 20
+                    height: 20
+
+                    background: Rectangle {
+                        id: settingButtonRect
+
+                        radius: 30
+
+                        Image {
+                            id: settingsButtonImage
+
+                            anchors.centerIn: settingButtonRect
+                            width: settingsButton.width - 2
+                            height: settingsButton.height - 2
+                            fillMode: Image.PreserveAspectFit
+                            source: "images/icons/round-settings-24px.svg"
+                        }
+                    }
+                    onPressed: { settingButtonRect.color = "#c0c0c0"; }
+                    onReleased: {
+                        settingButtonRect.color = "#e0e0e0"
+                    }
                 }
 
                 background: Rectangle {
@@ -104,8 +136,10 @@ Window {
                 }
 
                 MouseArea {
+                    id: comboBoxRootMouseArea
                     anchors.fill: parent;
                     hoverEnabled: true;
+                    propagateComposedEvents: true
                     onPressed: { rootItemBackground.color = "#c0c0c0"; }
                     onReleased: {
                         rootItemBackground.color = "#e0e0e0"
@@ -117,6 +151,18 @@ Window {
                     }
                     onEntered: { rootItemBackground.color = "#c7c7c7"; }
                     onExited: { rootItemBackground.color = Qt.binding(function() { return rootItemBackground.down ? "#e0e0e0" :"#fdfdfd" }); }
+                    onMouseXChanged: {
+                        // manually make settings button hover
+                        var mousePos = mapToItem(comboBoxRootMouseArea, mouse.x, mouse.y)
+                        var settingsButtonPos = mapToItem(comboBoxRootMouseArea, settingsButton.x, settingsButton.y)
+                        if(mousePos.x >= settingsButtonPos.x && mousePos.x <= settingsButtonPos.x + settingsButton.width){
+                            settingButtonRect.color = "#c7c7c7";
+                            rootItemBackground.color = Qt.binding(function() { return rootItemBackground.down ? "#e0e0e0" :"#fdfdfd" });
+                        } else {
+                            settingButtonRect.color = Qt.binding(function() { return settingButtonRect.down ? "#e0e0e0" :"#fdfdfd" });
+                            rootItemBackground.color = "#c7c7c7";
+                        }
+                    }
                 }
 
                 indicator: null
@@ -176,7 +222,7 @@ Window {
                     width: tabBar.width / 2
                     height: textConvElement.height + 10
                     down: true
-                    // customize tab button
+
                     background: Rectangle {
                         id: buttonRectOne
 
