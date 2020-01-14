@@ -161,159 +161,274 @@ Window {
                 }
             }
 
-            TextField {
-                id: searchBar
+            TabBar {
+                id: tabBar
 
                 anchors.top: accountComboBox.bottom
                 anchors.topMargin: 10
-                width: parent.width
-                height: 30
-                font.pointSize: 10
+                width: callViewRect.width
+                height: Math.max(pageOne.height, pageTwo.height)
+                currentIndex: 0
 
-                placeholderText: qsTr("Search")
-                background: Rectangle {
-                    id: searchBarBackground
+                TabButton {
+                    id: pageOne
 
-                    border.color: searchBar.focus ? "green" : "black"
+                    width: tabBar.width / 2
+                    height: textConvElement.height + 10
+                    down: true
+                    // customize tab button
+                    background: Rectangle {
+                        id: buttonRectOne
+
+                        radius: 10
+                        color: pageOne.down ? "#e0e0e0" :"#fdfdfd"
+
+                        Text {
+                            id: textConvElement
+
+                            anchors.centerIn: buttonRectOne
+
+                            text: qsTr("Converstation")
+                            font.pointSize: 10
+                            fontSizeMode: Text.Fit
+                            opacity: enabled ? 1.0 : 0.3
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onPressed: { buttonRectOne.color = "#c0c0c0"; tabBar.currentIndex = 0; pageOne.down = true; pageTwo.down = false;}
+                            onReleased: { buttonRectOne.color = "#e0e0e0"; }
+                            onEntered: { buttonRectOne.color = "#c7c7c7"; }
+                            onExited: { buttonRectOne.color = Qt.binding(function() { return pageOne.down ? "#e0e0e0" :"#fdfdfd" }); }
+                        }
+                    }
                 }
-                onTextChanged: {
-                    mainWindow.searchBarTextChanged(searchBar.text)
+                TabButton {
+                    id: pageTwo
+
+                    width: tabBar.width / 2
+                    height: textInvElement.height + 10
+
+                    background: Rectangle {
+                        id: buttonRectTwo
+
+                        radius: 10
+                        color: pageTwo.down ? "#e0e0e0" :"#fdfdfd"
+
+                        Text {
+                            id: textInvElement
+
+                            anchors.centerIn: buttonRectTwo
+
+                            text: qsTr("Invitation")
+                            font.pointSize: 10
+                            opacity: enabled ? 1.0 : 0.3
+                            fontSizeMode: Text.Fit
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onPressed: { buttonRectTwo.color = "#c0c0c0"; tabBar.currentIndex = 1; pageTwo.down = true; pageOne.down = false;}
+                            onReleased: { buttonRectTwo.color = "#e0e0e0"; }
+                            onEntered: { buttonRectTwo.color = "#c7c7c7"; }
+                            onExited: { buttonRectTwo.color = Qt.binding(function() { return pageTwo.down ? "#e0e0e0" :"#fdfdfd" }); }
+                        }
+                    }
                 }
             }
 
-            ListView {
-                id: smartListView
+            StackLayout {
+                id: stackLayoutView
 
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                width: parent.width
-                height: parent.height - accountComboBox.height - searchBar.height - 30
-                model: animalModel
-                clip: true
+                anchors.top: tabBar.bottom
+                anchors.topMargin: 10
+                currentIndex: tabBar.currentIndex
+                width: callViewRect.width
+                height: callViewRect.height - accountComboBox.height - tabBar.height
 
-                delegate: ItemDelegate {
+                Item {
+                    id: stackOne
 
-                    Image {
-                        id: smartListUserImage
+                    anchors.fill: parent
 
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 30
-                        height: parent.height
-                        fillMode: Image.PreserveAspectFit
-                        source: "images/jami.png"
-                    }
+                    TextField {
+                        id: searchBar
 
-                    Text {
-                        id: smartListUserName
-
-                        anchors.left: smartListUserImage.right
-                        anchors.leftMargin: 10
                         anchors.top: parent.top
-                        fontSizeMode: Text.Fit
-
-                        text: type
+                        width: parent.width
+                        height: 30
                         font.pointSize: 10
+
+                        placeholderText: qsTr("Search")
+                        background: Rectangle {
+                            id: searchBarBackground
+
+                            border.color: searchBar.focus ? "green" : "black"
+                        }
+                        onTextChanged: {
+                            mainWindow.searchBarTextChanged(searchBar.text)
+                        }
                     }
 
-                    Text {
-                        id: smartListUserSize
+                    ListView {
+                        id: smartListView
 
                         anchors.bottom: parent.bottom
-                        anchors.left: smartListUserImage.right
-                        anchors.leftMargin: 10
-                        fontSizeMode: Text.Fit
+                        anchors.left: parent.left
+                        width: parent.width
+                        height: parent.height -  searchBar.height - 15
+                        model: animalModel
+                        clip: true
 
-                        text: size
-                        font.pointSize: 10
-                    }
+                        delegate: ItemDelegate {
 
-                    background: Rectangle {
-                        id: itemSmartListBackground
+                            Image {
+                                id: smartListUserImage
 
-                        implicitWidth: smartListView.width
-                        implicitHeight: smartListUserName.height + smartListUserSize.height + 10
-                        border.width: 0
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent;
-                        hoverEnabled: true;
-                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                        onPressed: { itemSmartListBackground.color = "#c0c0c0"; }
-                        onReleased: {
-                            itemSmartListBackground.color = "#e0e0e0"
-                            if (mouse.button === Qt.RightButton && Qt.platform.os == "windows") {
-                                // make menu pos at mouse
-                                var relativeMousePos = mapToItem(itemSmartListBackground, mouse.x, mouse.y)
-                                smartListContextMenu.x = relativeMousePos.x
-                                smartListContextMenu.y = relativeMousePos.y
-                                smartListContextMenu.open()
-                            } else if (mouse.button === Qt.LeftButton && Qt.platform.os == "windows") {
-                                if(welcomeViewStack.visible)
-                                    welcomeViewStack.push(popback)
-                                else
-                                    callViewStack.push(popback)
-                                userTypeName = smartListUserName.text
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 30
+                                height: parent.height
+                                fillMode: Image.PreserveAspectFit
+                                source: "images/jami.png"
                             }
-                        }
-                        onEntered: { itemSmartListBackground.color = "#c7c7c7"; }
-                        onExited: { itemSmartListBackground.color = Qt.binding(function() { return itemSmartListBackground.down ? "#e0e0e0" :"#fdfdfd" }); }
-                    }
-                    Menu {
-                        id: smartListContextMenu
-                        MenuItem {
-                            id: smartListCopyItem
-                            text: qsTr("Popup")
-                            font.pointSize: 10
-                            background: Rectangle {
-                                id: smartListContextMenuBackRect
 
-                                implicitWidth: 150
-                                implicitHeight: 30
-                                border.width: 1
-                                border.color: "black"
-                                color: smartListCopyItem.down ? "#e0e0e0" :"#fdfdfd"
-                                MouseArea {
-                                    anchors.fill: parent;
-                                    hoverEnabled: true;
-                                    onPressed: { smartListContextMenuBackRect.color = "#c0c0c0"; }
-                                    onReleased: {
-                                        smartListContextMenuBackRect.color = "#e0e0e0"
-                                        smartListContextMenu.close()
-                                        contextMenuPopUpMock.open()
+                            Text {
+                                id: smartListUserName
+
+                                anchors.left: smartListUserImage.right
+                                anchors.leftMargin: 10
+                                anchors.top: parent.top
+                                fontSizeMode: Text.Fit
+
+                                text: type
+                                font.pointSize: 10
+                            }
+
+                            Text {
+                                id: smartListUserSize
+
+                                anchors.bottom: parent.bottom
+                                anchors.left: smartListUserImage.right
+                                anchors.leftMargin: 10
+                                fontSizeMode: Text.Fit
+
+                                text: size
+                                font.pointSize: 10
+                            }
+
+                            background: Rectangle {
+                                id: itemSmartListBackground
+
+                                implicitWidth: smartListView.width
+                                implicitHeight: smartListUserName.height + smartListUserSize.height + 10
+                                border.width: 0
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent;
+                                hoverEnabled: true;
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                                onPressed: { itemSmartListBackground.color = "#c0c0c0"; }
+                                onReleased: {
+                                    itemSmartListBackground.color = "#e0e0e0"
+                                    if (mouse.button === Qt.RightButton && Qt.platform.os == "windows") {
+                                        // make menu pos at mouse
+                                        var relativeMousePos = mapToItem(itemSmartListBackground, mouse.x, mouse.y)
+                                        smartListContextMenu.x = relativeMousePos.x
+                                        smartListContextMenu.y = relativeMousePos.y
+                                        smartListContextMenu.open()
+                                    } else if (mouse.button === Qt.LeftButton && Qt.platform.os == "windows") {
+                                        if(welcomeViewStack.visible)
+                                            welcomeViewStack.push(popback)
+                                        else
+                                            callViewStack.push(popback)
+                                        userTypeName = smartListUserName.text
                                     }
-                                    onEntered: { smartListContextMenuBackRect.color = "#c7c7c7"; }
-                                    onExited: { smartListContextMenuBackRect.color = Qt.binding(function() { return smartListCopyItem.down ? "#e0e0e0" :"#fdfdfd" }); }
+                                }
+                                onEntered: { itemSmartListBackground.color = "#c7c7c7"; }
+                                onExited: { itemSmartListBackground.color = Qt.binding(function() { return itemSmartListBackground.down ? "#e0e0e0" :"#fdfdfd" }); }
+                            }
+                            Menu {
+                                id: smartListContextMenu
+                                MenuItem {
+                                    id: smartListCopyItem
+                                    text: qsTr("Popup")
+                                    font.pointSize: 10
+                                    background: Rectangle {
+                                        id: smartListContextMenuBackRect
+
+                                        implicitWidth: 150
+                                        implicitHeight: 30
+                                        border.width: 1
+                                        border.color: "black"
+                                        color: smartListCopyItem.down ? "#e0e0e0" :"#fdfdfd"
+                                        MouseArea {
+                                            anchors.fill: parent;
+                                            hoverEnabled: true;
+                                            onPressed: { smartListContextMenuBackRect.color = "#c0c0c0"; }
+                                            onReleased: {
+                                                smartListContextMenuBackRect.color = "#e0e0e0"
+                                                smartListContextMenu.close()
+                                                contextMenuPopUpMock.open()
+                                            }
+                                            onEntered: { smartListContextMenuBackRect.color = "#c7c7c7"; }
+                                            onExited: { smartListContextMenuBackRect.color = Qt.binding(function() { return smartListCopyItem.down ? "#e0e0e0" :"#fdfdfd" }); }
+                                        }
+                                    }
+                                }
+                                background: Rectangle {
+                                    implicitWidth: 150
+                                    implicitHeight: 30
                                 }
                             }
                         }
-                        background: Rectangle {
-                            implicitWidth: 150
-                            implicitHeight: 30
+
+                        ScrollBar.vertical: ScrollBar {
+                            id: controlBar
+
+                            parent: smartListView
+                            anchors.top: smartListView.top
+                            anchors.right: smartListView.right
+                            size: 0.5
+                            orientation: Qt.Vertical
+                            policy: smartListView.contentHeight > smartListView.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+
+                            contentItem: Rectangle {
+                                implicitWidth: 5
+                                implicitHeight: 100
+                                radius: width / 2
+                                color: controlBar.pressed ? "#81e889" : "#c2f4c6"
+                            }
+                            background: Rectangle {
+                                color: "transparent"
+                            }
                         }
                     }
                 }
 
-                ScrollBar.vertical: ScrollBar {
-                    id: controlBar
+                Item {
+                    id: stackTwo
 
-                    parent: smartListView
-                    anchors.top: smartListView.top
-                    anchors.right: smartListView.right
-                    size: 0.5
-                    orientation: Qt.Vertical
-                    policy: smartListView.contentHeight > smartListView.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    anchors.fill: parent
 
-                    contentItem: Rectangle {
-                        implicitWidth: 5
-                        implicitHeight: 100
-                        radius: width / 2
-                        color: controlBar.pressed ? "#81e889" : "#c2f4c6"
-                    }
-                    background: Rectangle {
-                        color: "transparent"
+                    Image {
+                        id: popImg
+
+                        anchors.centerIn: parent
+                        width: 50
+                        height: 50
+                        fillMode: Image.PreserveAspectFit
+                        source: "images/jami.png"
                     }
                 }
             }
