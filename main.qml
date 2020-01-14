@@ -119,10 +119,6 @@ Window {
                             source: "images/icons/round-settings-24px.svg"
                         }
                     }
-                    onPressed: { settingButtonRect.color = "#c0c0c0"; }
-                    onReleased: {
-                        settingButtonRect.color = "#e0e0e0"
-                    }
                 }
 
                 background: Rectangle {
@@ -140,28 +136,43 @@ Window {
                     anchors.fill: parent;
                     hoverEnabled: true;
                     propagateComposedEvents: true
-                    onPressed: { rootItemBackground.color = "#c0c0c0"; }
+                    onPressed: {
+                        if(isMouseOnSettingsButton(mouse))
+                            settingButtonRect.color = "#c0c0c0"
+                        else
+                            rootItemBackground.color = "#c0c0c0"
+                    }
                     onReleased: {
-                        rootItemBackground.color = "#e0e0e0"
-                        if(accountComboBox.down) {
-                            accountComboBox.popup.close()
+                        if(isMouseOnSettingsButton(mouse)) {
+                            settingButtonRect.color = "#e0e0e0"
                         } else {
-                            accountComboBox.popup.open()
+                            rootItemBackground.color = "#e0e0e0"
+                            if(accountComboBox.down) {
+                                accountComboBox.popup.close()
+                            } else {
+                                accountComboBox.popup.open()
+                            }
                         }
                     }
                     onEntered: { rootItemBackground.color = "#c7c7c7"; }
                     onExited: { rootItemBackground.color = Qt.binding(function() { return rootItemBackground.down ? "#e0e0e0" :"#fdfdfd" }); }
                     onMouseXChanged: {
                         // manually make settings button hover
-                        var mousePos = mapToItem(comboBoxRootMouseArea, mouse.x, mouse.y)
-                        var settingsButtonPos = mapToItem(comboBoxRootMouseArea, settingsButton.x, settingsButton.y)
-                        if(mousePos.x >= settingsButtonPos.x && mousePos.x <= settingsButtonPos.x + settingsButton.width){
+                        if(isMouseOnSettingsButton(mouse)){
                             settingButtonRect.color = "#c7c7c7";
                             rootItemBackground.color = Qt.binding(function() { return rootItemBackground.down ? "#e0e0e0" :"#fdfdfd" });
                         } else {
                             settingButtonRect.color = Qt.binding(function() { return settingButtonRect.down ? "#e0e0e0" :"#fdfdfd" });
                             rootItemBackground.color = "#c7c7c7";
                         }
+                    }
+                    function isMouseOnSettingsButton(mouse){
+                        var mousePos = mapToItem(comboBoxRootMouseArea, mouse.x, mouse.y)
+                        var settingsButtonPos = mapToItem(comboBoxRootMouseArea, settingsButton.x, settingsButton.y)
+                        if((mousePos.x >= settingsButtonPos.x && mousePos.x <= settingsButtonPos.x + settingsButton.width) &&
+                           (mousePos.y >= settingsButtonPos.y && mousePos.y <= settingsButtonPos.y + settingsButton.height))
+                            return true
+                        return false
                     }
                 }
 
