@@ -71,7 +71,6 @@ Window {
                 anchors.top: callViewRect.top
                 width: callViewRect.width
                 height: 50
-                model: animalModel
                 currentIndex: 0
 
                 Image {
@@ -178,42 +177,79 @@ Window {
 
                 indicator: null
 
-                delegate:ItemDelegate {
-                    Image {
-                        id: userImage
+                // overwrite the combo box pop up to add footer (for add accounts)
+                popup: Popup {
+                    id: comboBoxPopup
 
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 30
-                        height: parent.height
-                        fillMode: Image.PreserveAspectFit
-                        source: "images/jami.png"
-                    }
-                    Text {
-                        anchors.left: userImage.right
-                        anchors.leftMargin: 10
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: "Animal: " + type + ", " + size
-                        font.pointSize: 10
-                    }
+                    y: accountComboBox.height
+                    width: accountComboBox.width
+                    implicitHeight: contentItem.implicitHeight
+                    padding: 0
 
-                    background: Rectangle {
-                        id: itemCoboBackground
+                    contentItem: ListView {
+                        id: comboBoxPopupListView
 
-                        implicitWidth: accountComboBox.width
-                        implicitHeight: accountComboBox.height
-                        border.width: 0
-                    }
+                        clip: true
+                        model: animalModel
+                        implicitHeight: contentHeight
+                        delegate:ItemDelegate {
 
-                    MouseArea {
-                        anchors.fill: parent;
-                        hoverEnabled: true;
-                        onPressed: { itemCoboBackground.color = "#c0c0c0"; }
-                        onReleased: {
-                            itemCoboBackground.color = "#e0e0e0"
+                            Image {
+                                id: userImage
+
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 30
+                                height: parent.height
+                                fillMode: Image.PreserveAspectFit
+                                source: "images/jami.png"
+                            }
+
+                            Text {
+                                anchors.left: userImage.right
+                                anchors.leftMargin: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Animal: " + type + ", " + size
+                                font.pointSize: 10
+                            }
+
+                            background: Rectangle {
+                                id: itemCoboBackground
+
+                                implicitWidth: accountComboBox.width
+                                implicitHeight: accountComboBox.height
+                                border.width: 0
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent;
+                                hoverEnabled: true;
+                                onPressed: { itemCoboBackground.color = "#c0c0c0"; }
+                                onReleased: {
+                                    itemCoboBackground.color = "#e0e0e0"
+                                }
+                                onEntered: { itemCoboBackground.color = "#c7c7c7"; }
+                                onExited: { itemCoboBackground.color = Qt.binding(function() { return itemCoboBackground.down ? "#e0e0e0" :"#fdfdfd" }); }
+                            }
                         }
-                        onEntered: { itemCoboBackground.color = "#c7c7c7"; }
-                        onExited: { itemCoboBackground.color = Qt.binding(function() { return itemCoboBackground.down ? "#e0e0e0" :"#fdfdfd" }); }
+
+                        footer: Button {
+                            id: comboBoxFooterItem
+
+                            implicitWidth: accountComboBox.width
+                            implicitHeight: accountComboBox.height
+
+                            Text {
+                                id: footerTextContent
+
+                                anchors.centerIn: comboBoxFooterItem
+                                text: qsTr("Add Account")
+                                font.pointSize: 10
+                                fontSizeMode: Text.Fit
+                            }
+                        }
+
+                        ScrollIndicator.vertical: ScrollIndicator { }
                     }
                 }
             }
