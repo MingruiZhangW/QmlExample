@@ -4,8 +4,9 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Universal 2.2
+import QtGraphicalEffects 1.0
 
-Window {
+ApplicationWindow {
     id: mainWindow
 
     property int minWidth: 300
@@ -604,6 +605,9 @@ Window {
         x: Math.round((mainWindow.width - width) / 2)
         y: Math.round((mainWindow.height - height) / 2)
         width: Math.min(mainWindow.width, mainWindow.height) / 3 * 2
+        parent: ApplicationWindow.overlay
+        modal: true
+        dim: true
 
         standardButtons: Dialog.Ok | Dialog.Cancel
 
@@ -618,5 +622,10 @@ Window {
             fillMode: Image.PreserveAspectFit
             source: "images/jami.png"
         }
+    }
+    overlay.modal: ColorOverlay {
+        source: mainWindow.contentItem
+        color: "transparent"
+        ColorAnimation on color { to: Qt.rgba(0, 0, 0, 0.33); duration: 500 }
     }
 }
