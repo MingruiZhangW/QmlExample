@@ -605,9 +605,8 @@ ApplicationWindow {
         x: Math.round((mainWindow.width - width) / 2)
         y: Math.round((mainWindow.height - height) / 2)
         width: Math.min(mainWindow.width, mainWindow.height) / 3 * 2
-        parent: ApplicationWindow.overlay
+        // when dialog is opened, trigger mainWindow overlay which is defined in overlay.model (model : true is necessary)
         modal: true
-        dim: true
 
         standardButtons: Dialog.Ok | Dialog.Cancel
 
@@ -626,6 +625,7 @@ ApplicationWindow {
     overlay.modal: ColorOverlay {
         source: mainWindow.contentItem
         color: "transparent"
+        // color animation
         ColorAnimation on color { to: Qt.rgba(0, 0, 0, 0.33); duration: 500 }
     }
 }
