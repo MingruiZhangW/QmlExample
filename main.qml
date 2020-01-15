@@ -561,6 +561,15 @@ ApplicationWindow {
             anchors.left: splitView.left
             width: splitView.width / 2
             height: splitView.height
+
+            popEnter: Transition {
+                PropertyAnimation {
+                    property: "opacity"
+                    from: 0
+                    to:1
+                    duration: 200
+                }
+            }
         }
 
         StackView {
@@ -570,6 +579,15 @@ ApplicationWindow {
             anchors.right: parent.right
             width: splitView.width / 2
             height: splitView.height
+
+            popEnter: Transition {
+                PropertyAnimation {
+                    property: "opacity"
+                    from: 0
+                    to:1
+                    duration: 200
+                }
+            }
         }
     }
 
