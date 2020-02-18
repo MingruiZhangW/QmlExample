@@ -13,8 +13,10 @@ ApplicationWindow {
     property int minHeight: 400
     property int textFontSize: 8
     property string userTypeName: "type"
+    property string changeLabelTextButtonText: "Click me"
 
     signal searchBarTextChanged(string msg)
+    signal changeLabelTextButtonClicked(string msg)
 
     Universal.theme: Universal.Light
 
@@ -23,6 +25,15 @@ ApplicationWindow {
     minimumWidth: minWidth
     minimumHeight: minHeight
     title: qsTr("Hello World")
+
+    // subscribe to a signal
+    //ctxt->setContextProperty("myService", &myService);
+    Connections {
+        target: myService
+        onCallback: {
+            changeLabelTextButtonText = textToChange;
+        }
+    }
 
     Component {
         id: popback
@@ -133,8 +144,8 @@ ApplicationWindow {
 
                 MouseArea {
                     id: comboBoxRootMouseArea
-                    anchors.fill: parent;
-                    hoverEnabled: true;
+                    anchors.fill: parent
+                    hoverEnabled: true
                     propagateComposedEvents: true
                     onPressed: {
                         if(isMouseOnSettingsButton(mouse))
@@ -223,8 +234,8 @@ ApplicationWindow {
                             }
 
                             MouseArea {
-                                anchors.fill: parent;
-                                hoverEnabled: true;
+                                anchors.fill: parent
+                                hoverEnabled: true
                                 onPressed: { itemCoboBackground.color = "#c0c0c0"; }
                                 onReleased: {
                                     itemCoboBackground.color = "#e0e0e0"
@@ -535,6 +546,8 @@ ApplicationWindow {
             id: welcomeRect
 
             Label {
+                id: welcomeLabel
+
                 anchors.centerIn: welcomeRect
                 width: 200
                 height: 200
@@ -544,13 +557,29 @@ ApplicationWindow {
                 font.pointSize: 22
                 font.italic: true
             }
+            Button {
+                id: changeLabelTextButton
+
+                width: 100
+                height: 50
+                anchors.top: welcomeLabel.bottom
+                anchors.topMargin: 10
+                anchors.left: welcomeLabel.left
+                anchors.leftMargin: welcomeLabel.width / 2 - changeLabelTextButton.width / 2
+
+                text: changeLabelTextButtonText
+                font.pointSize: 8
+                onClicked: {
+                    mainWindow.changeLabelTextButtonClicked(changeLabelTextButtonText);
+                }
+            }
         }
     }
 
     Rectangle {
         id: splitView
 
-        anchors.fill: parent;
+        anchors.fill: parent
         width: mainWindow.width
         height: mainWindow.height
 

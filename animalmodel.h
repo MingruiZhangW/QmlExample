@@ -3,6 +3,23 @@
 // Qt include
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
+#include <QDebug>
+
+class Service : public QObject {
+    Q_OBJECT
+
+public:
+    virtual ~Service(){}
+signals:
+    void callback(QString textToChange);
+public slots:
+    void trigger_clbk(QString msg) {
+        if(msg == "Click me")
+            emit callback("Ming - K");
+        else
+            emit callback("Click me");
+    }
+};
 
 class SelectableProxyModel : public QSortFilterProxyModel
 {

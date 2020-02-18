@@ -7,14 +7,18 @@
 #include <QtQuick/qquickview.h>
 #include <QQuickStyle>
 #include <QString>
+#include <QObject>
 
 #include "animalmodel.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    //QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    //QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     QGuiApplication app(argc, argv);
+
+    Service myService;
 
     AnimalModel model;
     model.addAnimal(Animal("Wolf", "Medium"));
@@ -44,10 +48,12 @@ int main(int argc, char *argv[])
 
     QQmlContext *ctxt = engine.rootContext();
     ctxt->setContextProperty("animalModel", model.getFilter());
+    ctxt->setContextProperty("myService", &myService);
     engine.load(url);
 
     QObject::connect(engine.rootObjects()[0], SIGNAL(searchBarTextChanged(QString)),
                      &model, SLOT(slotSearchBarTextChanged(const QString&)));
-
+    QObject::connect(engine.rootObjects()[0], SIGNAL(changeLabelTextButtonClicked(QString)),
+                     &myService, SLOT(trigger_clbk(QString)));
     return app.exec();
 }
