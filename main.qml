@@ -24,7 +24,6 @@ ApplicationWindow {
     width: 580
     minimumWidth: minWidth
     minimumHeight: minHeight
-    title: qsTr("Hello World")
 
     // subscribe to a signal
     //ctxt->setContextProperty("myService", &myService);
@@ -571,6 +570,10 @@ ApplicationWindow {
                 font.pointSize: 8
                 onClicked: {
                     mainWindow.changeLabelTextButtonClicked(changeLabelTextButtonText);
+                    // create a new window (qml ui)
+                    var component = Qt.createComponent("StartLoading.qml")
+                    var window    = component.createObject(mainWindow)
+                    window.show()
                 }
             }
         }

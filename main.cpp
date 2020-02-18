@@ -13,9 +13,8 @@
 
 int main(int argc, char *argv[])
 {
-    //QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    //QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
+    QGuiApplication::setApplicationName("Call-mock");
+    QGuiApplication::setOrganizationDomain("ming.net");
     QGuiApplication app(argc, argv);
 
     Service myService;

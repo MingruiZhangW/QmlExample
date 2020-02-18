@@ -1,3 +1,5 @@
+TARGET = Call-mock
+
 QT += core winextras qml quickcontrols2 quick quickwidgets widgets xml multimedia multimediawidgets network webenginewidgets svg sql
 
 CONFIG += suppress_vcproj_warnings c++17 qtquickcompiler
