@@ -7,3 +7,4 @@ A DPI Awareness Qml based application UI example
 ### Environment
 - Qt 5.9.4 and upper
 - Install MSVC_2017_64 under Qt modules
+- Windows 10 +
