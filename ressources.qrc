@@ -89,5 +89,6 @@
         <file>images/icons/av_icons/send-24px.svg</file>
         <file>images/icons/av_icons/stop-24px.svg</file>
         <file>images/icons/av_icons/mic-24px.svg</file>
+        <file>images/avatar-png-1.png</file>
     </qresource>
 </RCC>

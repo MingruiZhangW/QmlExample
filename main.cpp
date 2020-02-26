@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication::setApplicationName("Call-mock");
     QGuiApplication::setOrganizationDomain("ming.net");
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     Service myService;

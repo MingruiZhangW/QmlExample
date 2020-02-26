@@ -92,7 +92,8 @@ ApplicationWindow {
                     width: 30
                     height: accountComboBox.height
                     fillMode: Image.PreserveAspectFit
-                    source: "images/jami.png"
+                    source: "images/avatar-png-1.png"
+                    mipmap: true
                 }
 
                 Text {
