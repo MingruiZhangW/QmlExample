@@ -231,6 +231,15 @@ ApplicationWindow {
                                 implicitWidth: accountComboBox.width
                                 implicitHeight: accountComboBox.height
                                 border.width: 0
+
+                                CustomBorder {
+                                    commonBorder: false
+                                    lBorderwidth: 1
+                                    rBorderwidth: 1
+                                    tBorderwidth: 1
+                                    bBorderwidth: 1
+                                    borderColor: "red"
+                                }
                             }
 
                             MouseArea {

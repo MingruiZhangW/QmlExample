@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>StartLoading.qml</file>
+        <file>CustomBorder.qml</file>
     </qresource>
 </RCC>
