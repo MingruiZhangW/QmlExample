@@ -8,15 +8,31 @@
 #include <QQuickStyle>
 #include <QString>
 #include <QObject>
+#include <QTranslator>
+#include <QDate>
+#include <QLibraryInfo>
 
 #include "animalmodel.h"
 
 int main(int argc, char *argv[])
 {
+    qDebug()<< QLocale().name();
+
     QGuiApplication::setApplicationName("Call-mock");
     QGuiApplication::setOrganizationDomain("ming.net");
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+
+    // add chinese translations
+    auto appDir = qApp->applicationDirPath() + "/translations";
+    QTranslator qtTranslator_lang;
+    if(QLocale().name() == "zh_CN"){
+        qDebug()<< appDir;
+        qDebug()<< qtTranslator_lang.load("call-mock_zh_CN.qm", ":/translations");
+        qDebug()<< app.installTranslator(&qtTranslator_lang);
+    }
+
+    qDebug() << qtTranslator_lang.translate("main", "Add Account", 0);
 
     Service myService;
 
@@ -50,6 +66,7 @@ int main(int argc, char *argv[])
     ctxt->setContextProperty("animalModel", model.getFilter());
     ctxt->setContextProperty("myService", &myService);
     engine.load(url);
+    engine.retranslate();
 
     QObject::connect(engine.rootObjects()[0], SIGNAL(searchBarTextChanged(QString)),
                      &model, SLOT(slotSearchBarTextChanged(const QString&)));

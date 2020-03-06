@@ -13,7 +13,7 @@ ApplicationWindow {
     property int minHeight: 400
     property int textFontSize: 8
     property string userTypeName: "type"
-    property string changeLabelTextButtonText: "Click me"
+    property string changeLabelTextButtonText: qsTr("Click me")
 
     signal searchBarTextChanged(string msg)
     signal changeLabelTextButtonClicked(string msg)
@@ -560,7 +560,7 @@ ApplicationWindow {
                 anchors.centerIn: welcomeRect
                 width: 200
                 height: 200
-                text: "Welcome"
+                text: qsTr("Welcome")
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
                 font.pointSize: 22

@@ -15,9 +15,9 @@ signals:
 public slots:
     void trigger_clbk(QString msg) {
         if(msg == "Click me")
-            emit callback("Ming - K");
+            emit callback(tr("Ming - K"));
         else
-            emit callback("Click me");
+            emit callback(tr("Click me"));
     }
 };
 

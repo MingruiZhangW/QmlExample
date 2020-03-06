@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>StartLoading.qml</file>
         <file>CustomBorder.qml</file>
+        <file>translations/call-mock_zh_CN.qm</file>
+        <file>translations/call-mock_zh_CN.ts</file>
     </qresource>
 </RCC>

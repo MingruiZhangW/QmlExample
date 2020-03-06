@@ -39,7 +39,7 @@ Window {
 
             width: 50
             height: 50
-            text: "Ok"
+            text: qsTr("Ok")
 
             onClicked: {
                 root.close()
